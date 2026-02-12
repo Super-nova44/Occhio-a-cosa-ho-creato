@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Che cosa avrò mai progettato?</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Press Start 2P', monospace;
+      background: radial-gradient(circle at top, #0b1d51, #000814);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    .container {
+      position: relative;
+      width: 100%;
+      max-width: 420px;
+      text-align: center;
+      animation: fadeIn 1s ease;
+    }
+
+    img {
+      width: 100%;
+      display: block;
+      border-radius: 10px;
+      box-shadow: 0 0 30px rgba(0,0,0,0.6);
+      pointer-events: none;
+    }
+
+    .buttons {
+      position: absolute;
+      bottom: 6%;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 20px;
+      z-index: 10;
+    }
+
+    button {
+      font-size: 18px;
+      padding: 12px 22px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.2s ease;
+      font-family: 'Press Start 2P';
+    }
+
+    #yes {
+      background: linear-gradient(180deg, #2ecc71, #27ae60);
+      color: white;
+      box-shadow: 0 4px 0 #1e8449;
+    }
+
+    #no {
+      background: linear-gradient(180deg, #e74c3c, #c0392b);
+      color: white;
+      box-shadow: 0 4px 0 #922b21;
+    }
+
+    button:active {
+      transform: translateY(3px) scale(0.98);
+      box-shadow: none;
+    }
+
+    .hidden { display: none; }
+
+    .heart {
+      position: fixed;
+      font-size: 22px;
+      animation: floatUp 2s ease forwards;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(0) scale(1); opacity: 1; }
+      100% { transform: translateY(-150px) scale(1.5); opacity: 0; }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+
+  <audio id="music" preload="auto">
+    <source src="cipher.mp3" type="audio/mpeg">
+  </audio>
+
+  <div class="container" id="screen1">
+    <img src="leone_marino_prima_schermata_def.png" alt="Prima schermata" />
+
+    <div class="buttons">
+      <button id="yes" type="button">Sì</button>
+      <button id="no" type="button">No</button>
+    </div>
+  </div>
+
+  <div class="container hidden" id="screen2">
+    <img src="leone-marino-seconda-schermata-def.png" alt="Seconda schermata" />
+  </div>
+
+  <script>
+    const yesBtn = document.getElementById('yes');
+    const noBtn = document.getElementById('no');
+    const screen1 = document.getElementById('screen1');
+    const screen2 = document.getElementById('screen2');
+    const music = document.getElementById('music');
+
+    let scale = 1;
+
+    noBtn.addEventListener('click', () => {
+      scale += 0.18;
+      yesBtn.style.transform = `scale(${scale})`;
+      spawnHeart();
+    });
+
+    yesBtn.addEventListener('click', () => {
+      music.currentTime = 0;
+      music.volume = 0.6;
+      music.play();
+      explodeHearts();
+      showAchievement();
+      setTimeout(() => {
+        screen1.classList.add('hidden');
+        screen2.classList.remove('hidden');
+      }, 900);
+    });
+
+    function spawnHeart() {
+      const heart = document.createElement('div');
+      heart.className = 'heart';
+      heart.innerHTML = '❤️';
+      heart.style.left = Math.random() * window.innerWidth + 'px';
+      heart.style.top = window.innerHeight - 50 + 'px';
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 2000);
+    }
+
+    function explodeHearts() {
+      for (let i = 0; i < 30; i++) {
+        setTimeout(spawnHeart, i * 30);
+      }
+    }
+
+    function showAchievement() {
+      const badge = document.createElement('div');
+      badge.innerHTML = '🏆 Achievement unlocked:<br><span>Amore vero ❤️</span>';
+      badge.style.position = 'fixed';
+      badge.style.top = '50%';
+      badge.style.left = '50%';
+      badge.style.transform = 'translate(-50%, -50%) scale(0.8)';
+      badge.style.background = 'linear-gradient(180deg, #ffd700, #ffb700)';
+      badge.style.color = '#000';
+      badge.style.padding = '18px 22px';
+      badge.style.borderRadius = '12px';
+      badge.style.fontSize = '12px';
+      badge.style.textAlign = 'center';
+      badge.style.boxShadow = '0 0 25px rgba(255,215,0,0.8)';
+      badge.style.zIndex = 9999;
+      badge.style.opacity = '0';
+      badge.style.transition = 'all 0.5s ease';
+      document.body.appendChild(badge);
+
+      requestAnimationFrame(() => {
+        badge.style.opacity = '1';
+        badge.style.transform = 'translate(-50%, -50%) scale(1)';
+      });
+
+      setTimeout(() => {
+        badge.style.opacity = '0';
+        badge.style.transform = 'translate(-50%, -50%) scale(0.7)';
+        setTimeout(() => badge.remove(), 500);
+      }, 2500);
+    }
+  </script>
+
+</body>
+</html>
